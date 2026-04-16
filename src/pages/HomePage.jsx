@@ -1,34 +1,52 @@
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import PostCard from "@/features/posts/components/PostCard";
 import PostCardSkeleton from "@/features/posts/components/PostCardSkeleton";
-import getAllPosts from "@/features/posts/services/posts.service";
+import getAllPosts, {
+  deletePost,
+  editPost,
+} from "@/features/posts/services/posts.service";
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function HomePage() {
-  const {user , userLoading} = useAuth();
+  const { user, userLoading } = useAuth();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [viewModel, setViewModel] = useState("grid");
   const activeClass = "border border-zinc-800 bg-zinc-600";
-useEffect(() => {
-  console.log("useEffect fired")
-  const fetchData = async () => {
-    console.log("fetchData called")
-    try {
-      const data = await getAllPosts()
-      console.log("data:", data)
-      setPosts(data)
-    } catch (err) {
-      console.log("error:", err)
-      setError("Something went wrong")
-    } finally {
-      setLoading(false)
-    }
-  }
-  fetchData()
-}, [])
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getAllPosts();
+        setPosts(data);
+      } catch (err) {
+        setError("Something went wrong");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const handleDeletePost = async (id) => {
+    await deletePost(id);
+    const fetchData = async () => {
+      try {
+        const data = await getAllPosts();
+        setPosts(data);
+      } catch (err) {
+        setError("Something went wrong");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  };
+
+
+  // console.log(posts);
+  console.log(user);
 
   return (
     <>
@@ -39,8 +57,8 @@ useEffect(() => {
             Editorial <span className="text-muted block">Selected.</span>
           </h1>
           <p className="text-muted text-sm">
-            A curated selection of technical deep-dives and architectural designed for the modern engineer .
-            narratives{" "}
+            A curated selection of technical deep-dives and architectural
+            designed for the modern engineer . narratives{" "}
           </p>
         </div>
         {/* Posts Rendering  */}
@@ -101,13 +119,24 @@ useEffect(() => {
           >
             {loading
               ? Array.from({ length: 4 }).map((_, i) => (
-                  <PostCardSkeleton key={i} loading={loading} variant={viewModel} />
+                  <PostCardSkeleton
+                    key={i}
+                    loading={loading}
+                    variant={viewModel}
+                  />
                 ))
               : posts.map((p) => (
-                  <PostCard key={p.id} post={p} variant={viewModel} />
+                  <PostCard
+                    key={p.id}
+                    post={p}
+                    variant={viewModel}
+                    currentUser={p.author_id === user?.id}
+                    deletePost={() => {
+                      handleDeletePost(p.id);
+                    }}
+                  />
                 ))}
           </div>
-        
         </div>
 
         <div className="bg-white w-fit rounded-full p-2 fixed right-[3%] bottom-24 hover:scale-110 transition duration-300 cursor-pointer shadow-[0_0_25px_rgba(255,255,255,0.4)]">
@@ -129,7 +158,7 @@ useEffect(() => {
           </Link>
         </div>
       </div>
-    </> 
+    </>
   );
 }
 

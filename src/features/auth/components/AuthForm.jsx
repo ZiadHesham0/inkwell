@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Button } from "@/components/ui/button";
@@ -8,7 +8,7 @@ import { useAuth } from "../hooks/useAuth";
 
 function AuthForm() {
   const navigate = useNavigate();
-  const { signIn, signUp } = useAuth();
+  const { user , signIn, signUp } = useAuth();
 
   const [formData, setFormData] = useState({
     email: "",
@@ -27,6 +27,10 @@ function AuthForm() {
 
   const activeLinkStyle = "bg-white text-black";
   const [activeLink, setActiveLink] = useState("login");
+
+  useEffect(() => {
+    if (user) navigate("/");
+  }, [user]);
 
   const handleChange = (e) => {
     setFormData({
@@ -61,8 +65,14 @@ function AuthForm() {
     setUsernameError("");
     setConfirmPasswordError("");
     let err = false;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (formData.email.length < 1 || !formData.email.includes("@")) {
+    if (!emailRegex.test(formData.email)) {
+      setEmailError("Please enter a valid email");
+      err = true;
+    }
+
+    if (formData.email.length < 1 || !emailRegex.test(formData.email)) {
       setEmailError("Please enter a valid email");
       err = true;
     }
@@ -92,7 +102,7 @@ function AuthForm() {
           formData.email,
           formData.password,
           formData.username,
-          formData.avatar_url || null
+          formData.avatar_url || null,
         );
       }
       navigate("/");
@@ -136,7 +146,9 @@ function AuthForm() {
         </div>
 
         <form onSubmit={handleSubmit}>
-          <span className="text-red-700 mt-2 text-center block">{reqError}</span>
+          <span className="text-red-700 mt-2 text-center block">
+            {reqError}
+          </span>
 
           {/* Email Field */}
           <div className="">
@@ -160,7 +172,10 @@ function AuthForm() {
           {/* Password Field */}
           <div className="my-4">
             <Field>
-              <FieldLabel htmlFor="fieldgroup-password" className="text-white/80">
+              <FieldLabel
+                htmlFor="fieldgroup-password"
+                className="text-white/80"
+              >
                 Password :
               </FieldLabel>
               <Input
@@ -182,7 +197,10 @@ function AuthForm() {
               {/* Username Field */}
               <div className="my-4">
                 <Field>
-                  <FieldLabel htmlFor="fieldgroup-username" className="text-white/80">
+                  <FieldLabel
+                    htmlFor="fieldgroup-username"
+                    className="text-white/80"
+                  >
                     Username :
                   </FieldLabel>
                   <Input
@@ -201,7 +219,10 @@ function AuthForm() {
               {/* Confirm Password Field */}
               <div className="my-4">
                 <Field>
-                  <FieldLabel htmlFor="fieldgroup-confirm-password" className="text-white/80">
+                  <FieldLabel
+                    htmlFor="fieldgroup-confirm-password"
+                    className="text-white/80"
+                  >
                     Confirm Password :
                   </FieldLabel>
                   <Input
@@ -220,7 +241,10 @@ function AuthForm() {
               {/* Avatar URL Field + Preview */}
               <div className="my-4">
                 <Field>
-                  <FieldLabel htmlFor="fieldgroup-avatar" className="text-white/80">
+                  <FieldLabel
+                    htmlFor="fieldgroup-avatar"
+                    className="text-white/80"
+                  >
                     Profile Image URL (optional) :
                   </FieldLabel>
                   <div className="flex gap-2">

@@ -28,6 +28,7 @@ function Navbar() {
   const navigate = useNavigate();
   const { user, userLoading, signOut } = useAuth();
   console.log(user);
+  
 
   const [open, setOpen] = useState(false);
   const getNavLinkClass = (isActive) =>
@@ -43,7 +44,8 @@ function Navbar() {
 
   const handleSignOut = async () => {
     try {
-      await signOut(user.id);
+      await signOut();
+      navigate("/");
     } catch (error) {
       console.log(error);
     }
