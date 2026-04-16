@@ -139,7 +139,7 @@ function HomePage() {
           </div>
         </div>
 
-        <div className="bg-white w-fit rounded-full p-2 fixed right-[3%] bottom-24 hover:scale-110 transition duration-300 cursor-pointer shadow-[0_0_25px_rgba(255,255,255,0.4)]">
+        <div className="bg-white w-fit rounded-full p-2 fixed right-[3%] bottom-28 hover:scale-110 transition duration-300 cursor-pointer shadow-[0_0_25px_rgba(255,255,255,0.4)]">
           <Link to={"/posts/new"}>
             <svg
               xmlns="http://www.w3.org/2000/svg"

@@ -35,10 +35,20 @@ export default async function getAllPosts() {
   if (error) throw error;
   return data;
 }
-export const createPost = async (newPost) => {
+export const createPost = async (newPost, categoryIds = []) => {
   const { data, error } = await supabase.from("posts").insert(newPost);
   if (error) throw error;
   console.log(data);
+
+  if (categoryIds.length > 0) {
+    const { catError } = await supabase
+      .from("post_categories")
+      .insert(
+        categoryIds.map((catId) => ({ post_id: id, category_id: catId })),
+      );
+    if (catError) throw catError;
+  }
+
   return data;
 };
 export const deletePost = async (id) => {
@@ -47,7 +57,7 @@ export const deletePost = async (id) => {
   return data;
 };
 
-export const editPost = async (id, newData) => {
+export const editPost = async (id, newData, categoryIds = []) => {
   const { data, error } = await supabase
     .from("posts")
     .update(newData)
@@ -55,16 +65,32 @@ export const editPost = async (id, newData) => {
   if (error) throw error;
   console.log(data);
 
+  await supabase.from("post_categories").delete().eq("post_id", id);
+  if (categoryIds.length > 0) {
+    const { catError } = await supabase
+      .from("post_categories")
+      .insert(
+        categoryIds.map((catId) => ({ post_id: id, category_id: catId })),
+      );
+    if (catError) throw catError;
+  }
+
   return data;
 };
 
 export const getPost = async (id) => {
   const { data, error } = await supabase
     .from("posts")
-    .select("*")
+    .select("*  , post_categories(*)")
     .eq("id", id)
     .single();
   if (error) throw error;
   console.log(data);
+  return data;
+};
+
+export const getAllCategories = async () => {
+  const { data, error } = await supabase.from("categories").select("*");
+  if (error) throw error;
   return data;
 };
