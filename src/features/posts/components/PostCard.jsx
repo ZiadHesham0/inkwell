@@ -56,7 +56,7 @@ function PostCard({ post, variant = "grid", currentUser, deletePost }) {
         <img
           src={post.image_url}
           alt="Post cover"
-          className="w-48 md:w-52 lg:w-72 min-w-48 h-full object-cover grayscale brightness-50 rounded-r-xl"
+          className="w-30 md:w-52 lg:w-72  h-full object-cover grayscale brightness-50 rounded-r-xl"
         />
         {currentUser && (
           <div className="absolute flex gap-2 top-2 right-2">
@@ -137,7 +137,7 @@ function PostCard({ post, variant = "grid", currentUser, deletePost }) {
 
         {/* Card content */}
         <div className="flex flex-col justify-between flex-1 px-4 py-4">
-          <CardHeader className="p-0">
+          <CardHeader className="">
             {/* <div className="flex items-center justify-between gap-2"> */}
             <div className=" flex gap-1  mb-2.5">
               {post.post_categories.length > 0 &&

@@ -63,7 +63,7 @@ function HomePage() {
         </div>
         {/* Posts Rendering  */}
         <div className=" ">
-          <div className="myt-5 mb-10 flex flex-wrap justify-between items-center p-3">
+          <div className="myt-5 mb-10 flex gap-3 flex-wrap justify-between items-center p-3">
             <div className="section-header">
               <h3 className="text-2xl font-medium">Recent Publications</h3>
               <p className="text-sm text-muted">
